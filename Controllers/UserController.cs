@@ -10,9 +10,18 @@ namespace MyMvcApp.Controllers
         private static int nextId = 1; // Static counter for unique IDs
 
         // GET: User
-        public ActionResult Index()
+        public ActionResult Index(string searchString)
         {
-            return View(userlist);
+            var users = from u in userlist
+                        select u;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                users = users.Where(u => u.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase) ||
+                                         u.Email.Contains(searchString, StringComparison.OrdinalIgnoreCase));
+            }
+
+            return View(users.ToList());
         }
 
         // GET: User/Details/5
